@@ -1,0 +1,28 @@
+{
+  "name": "test_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "connect-history-api-fallback": "^1.6.0",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-static-gzip": "^2.1.0",
+    "node-zopfli-es": "^1.0.7",
+    "shrink-ray-current": "^4.1.2",
+    "spdy": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/connect-history-api-fallback": "^1.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
+    "eslint": "^7.17.0",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
