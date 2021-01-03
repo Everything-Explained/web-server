@@ -5,7 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "connect-history-api-fallback": "^1.6.0",
-    "debug": "^4.3.1",
+    "debug": "^4.3.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-static-gzip": "^2.1.1",
