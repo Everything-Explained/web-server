@@ -5,10 +5,10 @@ import { credentials } from './ssl/ssl';
 import { cloudFlareIps, localHostIps, thirtyDays } from './constants';
 import ipcheck from 'ip-range-check';
 import staticGZIP from 'express-static-gzip';
+import { inDev, paths } from './config';
 const debug = require('debug')('ee:app');
 
 const app = express();
-const inDev = process.env.NODE_ENV == 'development';
 const port = inDev ? 3003 : 443;
 
 app.use(express.urlencoded({ extended: false }));
@@ -44,7 +44,7 @@ app.use(history());
 
 // Default handler for all file requests
 app.use('/',
-  staticGZIP('../web-client/release/web_client', {
+  staticGZIP(paths.web, {
     serveStatic: {
       maxAge: thirtyDays
     }
