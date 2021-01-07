@@ -21,6 +21,14 @@ app.use((req, res, next) => {
   res.sendStatus(403);
 });
 
+// ADMIN Route placeholder
+app.use((req, res, next) => {
+  if (req.hostname.indexOf('admin.') == 0) {
+    return res.sendStatus(403);
+  }
+  next();
+});
+
 if (inDev) {
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
