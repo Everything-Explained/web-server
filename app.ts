@@ -38,10 +38,13 @@ app.use('/api', require('./routes/route_api'));
 app.use(history());
 
 // Default handler for all file requests
-app.use('/', (req, res, next) => {
-  res.setHeader('Cache-Control', `public, max-age=${thirtyDays}`);
-  staticGZIP('../web-client/release/web_client', {})(req, res, next);
-});
+app.use('/',
+  staticGZIP('../web-client/release/web_client', {
+    serveStatic: {
+      maxAge: thirtyDays
+    }
+  }
+));
 
 const server = spdy.createServer(credentials, app);
 server.listen(port, () => {
