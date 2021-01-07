@@ -37,9 +37,6 @@ if (inDev) {
   });
 }
 
-
-
-
 app.use('/api', require('./routes/route_api'));
 
 // Rewrite request URL to index.html, if request is not a file
@@ -55,6 +52,6 @@ app.use('/',
 ));
 
 const server = spdy.createServer(credentials, app);
-server.listen(port, () => {
-  console.log('Server Started');
+server.listen(port, '0.0.0.0', () => {
+  console.log('Server Listening on Port', port);
 });
