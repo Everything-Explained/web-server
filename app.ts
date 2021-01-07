@@ -37,7 +37,7 @@ if (inDev) {
   });
 }
 
-app.use('/api', require('./routes/route_api'));
+app.use('/api', require('./routes/api_route'));
 
 // Rewrite request URL to index.html, if request is not a file
 app.use(history());
