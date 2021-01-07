@@ -1,12 +1,27 @@
 import express from 'express';
 import history from 'connect-history-api-fallback';
-import { loadStaticFrom } from './utils';
-const debug = require('debug')('app');
+import spdy from 'spdy';
+import { credentials } from './ssl/ssl';
+import { cloudFlareIps, localHostIps, thirtyDays } from './constants';
+import ipcheck from 'ip-range-check';
+import staticGZIP from 'express-static-gzip';
+const debug = require('debug')('ee:app');
 
 const app = express();
+const inDev = process.env.NODE_ENV == 'development';
+const port = inDev ? 3003 : 443;
 
 app.use(express.urlencoded({ extended: false }));
-if (process.env.NODE_ENV == 'development') {
+
+app.use((req, res, next) => {
+  if (ipcheck(req.ip, [...cloudFlareIps, ...localHostIps])) {
+    return next();
+  }
+  // Deny direct access to server
+  res.sendStatus(403);
+});
+
+if (inDev) {
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     console.log(req.url);
@@ -14,16 +29,21 @@ if (process.env.NODE_ENV == 'development') {
   });
 }
 
+
+
+
 app.use('/api', require('./routes/route_api'));
 
 // Rewrite request URL to index.html, if request is not a file
 app.use(history());
 
 // Default handler for all file requests
-app.use('/', loadStaticFrom('../web-client/release/web_client', 'cache'));
+app.use('/', (req, res, next) => {
+  res.setHeader('Cache-Control', `public, max-age=${thirtyDays}`);
+  staticGZIP('../web-client/release/web_client', {})(req, res, next);
+});
 
-
-
-app.listen(3003, '0.0.0.0', () => {
-  console.log(`hello world on port 3003`);
+const server = spdy.createServer(credentials, app);
+server.listen(port, () => {
+  console.log('Server Started');
 });
