@@ -12,5 +12,9 @@ router.get('/pageData/:file', (req, res, next) => {
   loadStaticFrom('../web-client/release/web_client/_data', 'no-cache')(req, res, next);
 });
 
+router.get('*', (req, res) => {
+  res.sendStatus(404);
+});
+
 
 export = router;
