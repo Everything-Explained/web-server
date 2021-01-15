@@ -1,14 +1,14 @@
-import express                from 'express';
-import history                from 'connect-history-api-fallback';
-import spdy                   from 'spdy';
-import { credentials }        from './ssl/ssl';
-import { inProd, thirtyDays } from './constants';
-import staticGZIP             from 'express-static-gzip';
-import { inDev, paths }       from './config';
-import { hasValidIP }         from './middleware/validate-ips';
-import { allowOrigin }        from './middleware/cors';
-const debug = require('debug')('ee:app');
+import { inDev, inProd, thirtyDays } from './constants';
+import express         from 'express';
+import history         from 'connect-history-api-fallback';
+import spdy            from 'spdy';
+import { credentials } from './ssl/ssl';
+import staticGZIP      from 'express-static-gzip';
+import { paths }       from './config';
+import { hasValidIP }  from './middleware/validate-ips';
+import { allowOrigin } from './middleware/cors';
 
+const debug = require('debug')('ee:app');
 const app = express();
 const port = inDev ? 3003 : 443;
 
