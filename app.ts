@@ -1,11 +1,12 @@
-import express from 'express';
-import history from 'connect-history-api-fallback';
-import spdy from 'spdy';
-import { credentials } from './ssl/ssl';
-import { cloudFlareIps, localHostIps, thirtyDays } from './constants';
-import ipcheck from 'ip-range-check';
-import staticGZIP from 'express-static-gzip';
-import { inDev, paths } from './config';
+import express                from 'express';
+import history                from 'connect-history-api-fallback';
+import spdy                   from 'spdy';
+import { credentials }        from './ssl/ssl';
+import { inProd, thirtyDays } from './constants';
+import staticGZIP             from 'express-static-gzip';
+import { inDev, paths }       from './config';
+import { hasValidIP }         from './middleware/validate-ips';
+import { allowOrigin }        from './middleware/cors';
 const debug = require('debug')('ee:app');
 
 const app = express();
@@ -13,13 +14,8 @@ const port = inDev ? 3003 : 443;
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use((req, res, next) => {
-  if (ipcheck(req.ip, [...cloudFlareIps, ...localHostIps])) {
-    return next();
-  }
-  // Deny direct access to server
-  res.sendStatus(403);
-});
+if (inProd) app.use(hasValidIP);
+if (inDev)  app.use(allowOrigin('*'));
 
 // ADMIN Route placeholder
 app.use((req, res, next) => {
@@ -28,14 +24,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-if (inDev) {
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    console.log(req.url);
-    next();
-  });
-}
 
 app.use('/api', require('./routes/api_route'));
 
@@ -53,5 +41,5 @@ app.use('/',
 
 const server = spdy.createServer(credentials, app);
 server.listen(port, '0.0.0.0', () => {
-  console.log('Server Listening on Port', port);
+  debug('Server Listening on Port', port);
 });
