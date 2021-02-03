@@ -39,7 +39,13 @@ app.use('/',
   }
 ));
 
-const server = spdy.createServer(credentials, app);
-server.listen(port, '0.0.0.0', () => {
-  debug('Server Listening on Port', port);
-});
+if (inDev) {
+  app.listen(port, () => {
+    debug('Server Listening on Port', port);
+  });
+} else {
+  const server = spdy.createServer(credentials, app);
+  server.listen(port, '0.0.0.0', () => {
+    debug('Server Listening on Port', port);
+  });
+}
