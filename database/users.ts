@@ -28,7 +28,7 @@ export function updateUser(user: string, val: 'code'|'nocode') {
 
 
 export function getUserState(userid: string): "code" | "nocode" | undefined {
-  return USERS[userid] || undefined;
+  return USERS[userid];
 }
 
 
