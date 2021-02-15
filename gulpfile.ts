@@ -18,6 +18,7 @@ function copyFiles() {
     './**/*.pem',
     './package.json',
     './package-lock.json',
+    './config.json',
     './run.sh',
     '!./node_modules/**',
   ])
