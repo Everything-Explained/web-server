@@ -1,4 +1,4 @@
 @echo off
-SET DEBUG=*
+SET DEBUG=ee:*
 SET NODE_ENV=development
 node app
