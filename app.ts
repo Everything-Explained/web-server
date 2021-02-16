@@ -27,6 +27,13 @@ app.use((req, res, next) => {
   next();
 });
 
+if (inDev) {
+  app.use((req, res, next) => {
+    debug('request:', req.url);
+    next();
+  });
+}
+
 app.use(express.json());
 app.use(catchAuthorization);
 app.use('/api', require('./routes/api_route'));
