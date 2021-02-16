@@ -27,15 +27,15 @@ app.use((req, res, next) => {
   next();
 });
 
-if (inDev) {
-  app.use((req, res, next) => {
-    debug('request:', req.url);
-    next();
-  });
-}
 
 app.use(express.json());
 app.use(catchAuthorization);
+if (inDev) {
+  app.use((req, res, next) => {
+    debug(`REQ::${req.method}`, req.url, req.body, req.query);
+    next();
+  });
+}
 app.use('/api', require('./routes/api_route'));
 
 // Rewrite request URL to index.html, if request is not a file
