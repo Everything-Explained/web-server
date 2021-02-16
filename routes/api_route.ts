@@ -28,6 +28,7 @@ type DataFileParams = { dir: string; file: string; }
 _router.get<DataFileParams, any, any, {userid:string}>('/data/:dir/:file', (req, res, next) => {
   const { dir, file } = req.params;
   const { userid } = req.query;
+  if (!req.isAuthorized) return res.sendStatus(403);
   if (!file) return next(); // Default to 404
   req.url = `${dir}/${file}`;
   if (file == 'red33m.json') {
@@ -59,6 +60,7 @@ type Red33mPostBody = { passcode: string; userid: string }
 type AccessForm     = { name: string; email: string; questions: [text: string, answer: string][]; }
 ;
 _router.route('/auth/red33m')
+  // Authenticate with passcode
   .put<any, any, Red33mPostBody>(async (req, res) => {
     const { passcode, userid } = req.body;
     const userState = getUserState(userid);
@@ -73,6 +75,7 @@ _router.route('/auth/red33m')
     updateUser(userid, 'code');
     res.sendStatus(200);
   })
+  // Send Exclusive Content Form for Red33m access
   .post<any, any, AccessForm>((req, res) => {
     const { name, email, questions } = req.body;
 
