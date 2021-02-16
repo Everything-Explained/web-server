@@ -5,16 +5,28 @@ import config from '../config.json';
 import argon from 'argon2';
 import { addUser, getUserState, updateUser } from '../database/users';
 import mailer from 'nodemailer';
+import { inDev } from '../constants';
 
 const debug = require('debug')('ee:api');
 
-const _transport = mailer.createTransport({
+const mailConfig = inDev
+? {
+    host: 'smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+      user: config.auth.mailtrap.user,
+      pass: config.auth.mailtrap.pass,
+    }
+  }
+: {
   service: 'Mailgun',
   auth: {
     user: config.auth.mailgun.user,
     pass: config.auth.mailgun.pass
   }
-});
+};
+
+const _transport = mailer.createTransport(mailConfig);
 
 const _router = Router();
 
