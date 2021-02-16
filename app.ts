@@ -13,6 +13,7 @@ const debug = require('debug')('ee:app');
 const app = express();
 const port = inDev ? 3003 : 443;
 
+
 app.use(express.urlencoded({ extended: false }));
 
 if (inProd) app.use(hasValidIP);
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.json());
 app.use(catchAuthorization);
 app.use('/api', require('./routes/api_route'));
 
