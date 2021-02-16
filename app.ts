@@ -7,6 +7,7 @@ import staticGZIP      from 'express-static-gzip';
 import { paths }       from './config';
 import { hasValidIP }  from './middleware/validate-ips';
 import { allowOrigin } from './middleware/cors';
+import { catchAuthorization } from './middleware/is-authorized';
 
 const debug = require('debug')('ee:app');
 const app = express();
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(catchAuthorization);
 app.use('/api', require('./routes/api_route'));
 
 // Rewrite request URL to index.html, if request is not a file
