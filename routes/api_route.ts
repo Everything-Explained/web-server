@@ -3,7 +3,7 @@ import staticGZIP from 'express-static-gzip';
 import { paths } from '../config';
 import config from '../config.json';
 import argon from 'argon2';
-import { addUser, getUserState, updateUser } from '../database/users';
+import { addUser, updateUser } from '../database/users';
 import mailer from 'nodemailer';
 import { inDev } from '../constants';
 
@@ -37,20 +37,16 @@ function verifyPasscode(passcode: string) {
 
 type DataFileParams = { dir: string; file: string; }
 ;
-_router.get<DataFileParams, any, any, {userid:string}>('/data/:dir/:file', (req, res, next) => {
+_router.get<DataFileParams, any, any>('/data/:dir/:file', (req, res, next) => {
   const { dir, file } = req.params;
-  const { userid } = req.query;
   if (!req.isAuthorized) return res.sendStatus(403);
-  if (!file) return next(); // Default to 404
+  if (!file)             return next(); // Default to 404
+
   req.url = `${dir}/${file}`;
-  if (file == 'red33m.json') {
-    if (
-         !userid
-      || !userid.trim()
-      || !getUserState(userid)
-      || getUserState(userid) == 'nocode'
-    ) { return res.sendStatus(403); }
-  }
+  if (file.includes('red33m') && !req.isRed33med)
+    return res.sendStatus(403)
+  ;
+
   res.setHeader('Cache-Control', 'public, no-cache');
   staticGZIP(`${paths.web}/_data`,
     { serveStatic: { cacheControl: false } }
@@ -60,39 +56,42 @@ _router.get<DataFileParams, any, any, {userid:string}>('/data/:dir/:file', (req,
 
 _router.post<any, any, {userid:string}>('/auth/user', (req, res) => {
   const { userid } = req.body;
-  if (!userid || !userid.trim()) return res.status(400).send('Missing ID');
-  if (userid.length < 30)        return res.sendStatus(403);
+
+  if (   !req.isAuthorized
+      || !userid || !userid.trim() || userid != req.id
+  ) return res.status(403);
+
+  if (userid.length < 30) return res.sendStatus(403);
 
   addUser(userid);
   res.sendStatus(200);
 });
 
 
-type Red33mPostBody = { passcode: string; userid: string }
 type AccessForm     = { name: string; email: string; questions: [text: string, answer: string][]; }
 ;
 _router.route('/auth/red33m')
   // Authenticate with passcode
-  .put<any, any, Red33mPostBody>(async (req, res) => {
-    const { passcode, userid } = req.body;
-    const userState = getUserState(userid);
+  .put<any, any, {passcode:string}>(async (req, res) => {
+    const { passcode } = req.body;
 
-    if (!userState)          return res.sendStatus(403);
-    if (!passcode)           return res.status(400).send('Missing Passcode');
-    if (userState == 'code') return res.status(400).send('Already Logged In');
+    if (   !req.isAuthorized
+        || !passcode || !passcode.trim().length
+    ) return res.sendStatus(403);
+
+    if (req.isRed33med) return res.status(400).send('Already Logged In');
 
     if (!await verifyPasscode(passcode))
       return res.status(400).send('Invalid Passcode')
     ;
-    updateUser(userid, 'code');
+    updateUser(req.id!, 'code');
     res.sendStatus(200);
   })
   // Send Exclusive Content Form for Red33m access
   .post<any, any, AccessForm>((req, res) => {
     const { name, email, questions } = req.body;
 
-    if (
-           !name                   || !name.trim().length  || name.length < 2
+    if (   !name                   || !name.trim().length  || name.length < 2
         || !email                  || !email.trim().length || !email.includes('@')
         || !questions              || !questions.length    || questions.length != 5
         || !questions[0][1].length || !req.isAuthorized

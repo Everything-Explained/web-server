@@ -7,7 +7,7 @@ import staticGZIP      from 'express-static-gzip';
 import { paths }       from './config';
 import { hasValidIP }  from './middleware/validate-ips';
 import { allowOrigin } from './middleware/cors';
-import { catchAuthorization } from './middleware/is-authorized';
+import { catchAuthorization } from './middleware/authorization';
 
 const debug = require('debug')('ee:app');
 const app = express();
