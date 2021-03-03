@@ -5,7 +5,7 @@ import config from '../config.json';
 import argon from 'argon2';
 import { addUser, updateUser } from '../database/users';
 import mailer from 'nodemailer';
-import { inDev } from '../constants';
+import { inDev, thirtyDays } from '../constants';
 
 const debug = require('debug')('ee:api');
 
@@ -46,9 +46,8 @@ _router.get<DataFileParams, any, any>('/data/:dir/:file?', (req, res, next) => {
     return res.sendStatus(403)
   ;
 
-  res.setHeader('Cache-Control', 'public, no-cache');
   staticGZIP(`${paths.web}/_data`,
-    { serveStatic: { cacheControl: false } }
+    { serveStatic: { maxAge: thirtyDays } }
   )(req, res, next);
 });
 
