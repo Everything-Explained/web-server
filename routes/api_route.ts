@@ -6,6 +6,7 @@ import argon from 'argon2';
 import { addUser, updateUser } from '../database/users';
 import mailer from 'nodemailer';
 import { inDev, thirtyDays } from '../constants';
+import { readFile } from 'fs/promises';
 
 const debug = require('debug')('ee:api');
 
@@ -52,17 +53,25 @@ _router.get<DataFileParams, any, any>('/data/:dir/:file?', (req, res, next) => {
 });
 
 
-_router.post<any, any, {userid:string}>('/auth/user', (req, res) => {
-  const { userid } = req.body;
+type SetupParams = { userid: string; }
+;
+_router.get<any, any, any, SetupParams>('/auth/setup', async (req, res) => {
+  const { userid } = req.query;
+  const version = (await readFile(`${paths.web}/version.txt`)).toString();
 
-  if (   !req.isAuthorized
+  // User already exists
+  if (req.isAuthorized) {
+    return res.send({ version });
+  }
+
+  if (   !req.hasValidID
       || !userid || !userid.trim() || userid != req.id
-  ) return res.status(403);
+  ) return res.sendStatus(403);
 
   if (userid.length < 30) return res.sendStatus(403);
 
   addUser(userid);
-  res.sendStatus(200);
+  res.status(201).send({ version });
 });
 
 
