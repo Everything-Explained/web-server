@@ -2,7 +2,8 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
 
 
-export type UserObj = { [key: string]: 'code'|'nocode' };
+export type UserObj   = { [key: string]: 'code'|'nocode' };
+export type UserState = 'code'|'nocode'|undefined;
 
 if (!existsSync('./users.json')) {
   writeFileSync('./users.json', JSON.stringify({}));
@@ -27,9 +28,7 @@ export function updateUser(user: string, val: 'code'|'nocode') {
 }
 
 
-export function getUserState(userid: string): "code" | "nocode" | undefined {
-  return USERS[userid];
-}
+export function getUserState(userid: string): UserState { return USERS[userid]; }
 
 
 let fileQueue = -1
@@ -37,7 +36,7 @@ let fileQueue = -1
 export function saveUsers() {
   ++fileQueue;
   setTimeout(async () => {
-    await writeFile('./users.json', JSON.stringify(USERS));
+    await writeFile('./users.json', JSON.stringify(USERS, null, 2));
     --fileQueue;
   }, fileQueue * 250);
 }

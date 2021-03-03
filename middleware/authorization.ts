@@ -4,21 +4,22 @@ import { getUserState } from "../database/users";
 
 export function catchAuthorization(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
-  let userid = '';
+  let userID    : string = '';
+  let userState : string|undefined = '';
 
-  req.isAuthorized =
-    !!(   authHeader
-       && authHeader.includes('Bearer ')
-       && getUserState(userid = authHeader.split(' ')[1])
-       && userid.length > 30)
+  req.hasValidID =
+    !!(    authHeader
+        && authHeader.includes('Bearer ')
+        && (userID = authHeader.split(' ')[1])
+        && userID.trim().length)
   ;
 
-  req.id =
-      req.isAuthorized ? userid : undefined
-  ;
+  req.id = req.hasValidID ? userID : undefined;
+
+  req.isAuthorized = !!(req.hasValidID && (userState = getUserState(userID)));
 
   req.isRed33med =
-      !!(req.isAuthorized && (getUserState(userid) == 'code'))
+      !!(req.isAuthorized && (userState == 'code'))
   ;
   next();
 }
