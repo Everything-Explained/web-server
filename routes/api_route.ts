@@ -37,13 +37,12 @@ function verifyPasscode(passcode: string) {
 
 type DataFileParams = { dir: string; file: string; }
 ;
-_router.get<DataFileParams, any, any>('/data/:dir/:file', (req, res, next) => {
+_router.get<DataFileParams, any, any>('/data/:dir/:file?', (req, res, next) => {
   const { dir, file } = req.params;
   if (!req.isAuthorized) return res.sendStatus(403);
-  if (!file)             return next(); // Default to 404
 
-  req.url = `${dir}/${file}`;
-  if (file.includes('red33m') && !req.isRed33med)
+  req.url = file ? `${dir}/${file}` : `${dir}`;
+  if (dir == 'red33m' && !req.isRed33med)
     return res.sendStatus(403)
   ;
 
