@@ -38,7 +38,14 @@ if (inDev) {
 }
 app.use('/api', require('./routes/api_route'));
 
-// Rewrite request URL to index.html, if request is not a file
+if (inDev) {
+  app.use((req, res, next) => {
+    if (!req.url.includes('.')) res.setHeader('Cache-Control', `no-cache`);
+    next();
+  });
+}
+
+// Rewrite request to index.html, if request is not a file
 app.use(history());
 
 // Default handler for all file requests
