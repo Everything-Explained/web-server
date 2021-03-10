@@ -28,8 +28,9 @@ const mailConfig = inDev
 };
 
 const _transport = mailer.createTransport(mailConfig);
-
 const _router = Router();
+const _staticData = staticGZIP(`${paths.web}/_data`, { serveStatic: { maxAge: thirtyDays } });
+
 
 function verifyPasscode(passcode: string) {
   return argon.verify(config.auth.red33m, passcode);
@@ -42,14 +43,11 @@ _router.get<DataFileParams, any, any>('/data/:dir/:file?', (req, res, next) => {
   const { dir, file } = req.params;
   if (!req.isAuthorized) return res.sendStatus(403);
 
-  req.url = file ? `${dir}/${file}` : `${dir}`;
+  req.url = file ? `/${dir}/${file}` : `/${dir}`;
   if (dir == 'red33m' && !req.isRed33med)
     return res.sendStatus(403)
   ;
-
-  staticGZIP(`${paths.web}/_data`,
-    { serveStatic: { maxAge: thirtyDays } }
-  )(req, res, next);
+  _staticData(req, res, next);
 });
 
 
