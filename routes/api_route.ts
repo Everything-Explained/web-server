@@ -59,7 +59,7 @@ _router.get<any, any, any, SetupParams>('/auth/setup', async (req, res) => {
 
   // User already exists
   if (req.isAuthorized) {
-    return res.send({ version });
+    return res.send(version);
   }
 
   if (   !req.hasValidID
@@ -69,7 +69,7 @@ _router.get<any, any, any, SetupParams>('/auth/setup', async (req, res) => {
   if (userid.length < 30) return res.sendStatus(403);
 
   addUser(userid);
-  res.status(201).send({ version });
+  res.status(201).send(version);
 });
 
 
