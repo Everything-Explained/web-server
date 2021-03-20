@@ -10,7 +10,7 @@
     "express-session": "^1.17.1",
     "express-static-gzip": "^2.1.1",
     "ip-range-check": "^0.2.0",
-    "nodemailer": "^6.4.18",
+    "nodemailer": "^6.5.0",
     "spdy": "^4.0.2"
   },
   "devDependencies": {
