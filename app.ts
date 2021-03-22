@@ -1,4 +1,4 @@
-import { inDev, inProd, thirtyDays } from './constants';
+import { inDev, inProd, yearInMs } from './constants';
 import express         from 'express';
 import history         from 'connect-history-api-fallback';
 import spdy            from 'spdy';
@@ -52,7 +52,7 @@ app.use(history());
 app.use('/',
   staticGZIP(paths.web, {
     serveStatic: {
-      maxAge: thirtyDays
+      maxAge: yearInMs
     }
   }
 ));

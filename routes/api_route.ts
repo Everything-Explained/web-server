@@ -5,7 +5,7 @@ import config from '../config.json';
 import argon from 'argon2';
 import { addUser, updateUser } from '../database/users';
 import mailer from 'nodemailer';
-import { inDev, thirtyDays } from '../constants';
+import { inDev, yearInMs } from '../constants';
 import { readFile } from 'fs/promises';
 
 const debug = require('debug')('ee:api');
@@ -29,7 +29,7 @@ const mailConfig = inDev
 
 const _transport = mailer.createTransport(mailConfig);
 const _router = Router();
-const _staticData = staticGZIP(`${paths.web}/_data`, { serveStatic: { maxAge: thirtyDays } });
+const _staticData = staticGZIP(`${paths.web}/_data`, { serveStatic: { maxAge: yearInMs } });
 
 
 function verifyPasscode(passcode: string) {
