@@ -1,6 +1,5 @@
 import { inDev, inProd, yearInMs } from './constants';
 import express         from 'express';
-import history         from 'connect-history-api-fallback';
 import spdy            from 'spdy';
 import { credentials } from './ssl/ssl';
 import staticGZIP      from 'express-static-gzip';
@@ -8,6 +7,7 @@ import { paths }       from './config';
 import { hasValidIP }  from './middleware/validate-ips';
 import { allowOrigin } from './middleware/cors';
 import { catchAuthorization } from './middleware/authorization';
+import { defaultToIndex } from './middleware/defaultToIndex';
 
 const debug = require('debug')('ee:app');
 const app = express();
@@ -46,16 +46,9 @@ if (inDev) {
 }
 
 // Rewrite request to index.html, if request is not a file
-app.use(history());
+app.use(defaultToIndex);
 
-// Default handler for all file requests
-app.use('/',
-  staticGZIP(paths.web, {
-    serveStatic: {
-      maxAge: yearInMs
-    }
-  }
-));
+app.use('/', staticGZIP(paths.web, { serveStatic: { maxAge: yearInMs }} ));
 
 if (inDev) {
   app.listen(port, () => {
