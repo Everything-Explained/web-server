@@ -18,7 +18,7 @@ const _mailSubjects      = [
   "EvEx Form - I've got something to share",
   "EvEx Form - I want to collaborate",
   "EvEx Form - I want to correct you",
-  "EvEx Form - Exclusive Content Request"
+  "EvEx Form - Exclusive Content Request",
 ];
 const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: 20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); font-size: 1.1rem; font-family: Verdana;">`;
 const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%); font-weight: normal;'>`;
@@ -40,7 +40,6 @@ export function apiQnaFormRoute(router: Router) {
       .catch((err) => res.status(500).send(err.message))
     ;
   });
-
 }
 
 
@@ -48,16 +47,11 @@ function isValidFormReq(req: Request<any, any, QnaForm>) {
   const { name, email, questions, type } = req.body
   ;
   return !(
-       !name.trim()
-    || !name.length
-    || name.length < 2
-    || !email.trim()
-    || !email.length
-    || !~email.indexOf('@')
+       !name?.trim().match(/^[^(){}\-[\]!@#$%^&*_+=<>.,?'";:|\\/`~]{2,}$/i)
+    || !email?.trim().match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
     || type < 0 || type > 3
-    || !questions
-    || !questions.length
-    || !questions[0].answer.length
+    || !questions?.length
+    || !questions[0].answer?.length
   );
 }
 
