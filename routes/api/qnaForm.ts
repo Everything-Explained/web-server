@@ -47,7 +47,7 @@ function isValidFormReq(req: Request<any, any, QnaForm>) {
   const { name, email, questions, type } = req.body
   ;
   return !(
-       !name?.trim().match(/^[^(){}\-[\]!@#$%^&*_+=<>.,?'";:|\\/`~]{2,}$/i)
+       !name?.trim().match(/^[a-z\s.]{2,}$/i)
     || !email?.trim().match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
     || type < 0 || type > 3
     || !questions?.length
