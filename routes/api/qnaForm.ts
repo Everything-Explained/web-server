@@ -12,7 +12,7 @@ type MailType        = 0|1|2|3;
 
 
 
-const _mailConfig        = inDev ? config.mail.mailtrap : config.mail.mailgun;
+const _mailConfig        = inDev ? config.mail.mailtrap : config.mail.sendinblue;
 const _transport         = mailer.createTransport(_mailConfig);
 const _mailSubjects      = [
   "EvEx Form - I've got something to share",
