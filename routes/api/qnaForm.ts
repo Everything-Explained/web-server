@@ -49,7 +49,7 @@ function isValidFormReq(req: Request<any, any, QnaForm>) {
   return !(
        !name?.trim().match(/^[a-z\s.]{2,}$/i)
     || !email?.trim().match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
-    || type < 0 || type > 3
+    || !(typeof type == 'number') || type < 0 || type > 3
     || !questions?.length
     || !questions[0].answer?.length
   );
