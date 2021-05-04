@@ -8,9 +8,14 @@ import Mail from "nodemailer/lib/mailer";
 
 type QnaForm         = { type: MailType, name: string; email: string; questions: QnaFormQuestion[]; }
 type QnaFormQuestion = { text: string; answer: string }
-type MailType        = 0|1|2|3;
 
 
+enum MailType {
+  SHAREWITHUS = 0,
+  COLLABORATEWITHUS,
+  CORRECTUS,
+  RED33MFORM,
+}
 
 const _mailConfig        = inDev ? config.mail.mailtrap : config.mail.sendinblue;
 const _transport         = mailer.createTransport(_mailConfig);
@@ -51,7 +56,7 @@ function isValidFormReq(req: Request<any, any, QnaForm>) {
   return !(
        !name?.trim().match(/^[a-z\s.]{2,}$/i)
     || !email?.trim().match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
-    || !(typeof type == 'number') || type < 0 || type > 3
+    || !Number.isFinite(type) || !_mailSubjects[type]
     || !questions?.length
     || !questions[0].answer?.length
   );
