@@ -20,7 +20,9 @@ const _mailSubjects      = [
   "EvEx Form - I want to correct you",
   "EvEx Form - Exclusive Content Request",
 ];
-const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: 20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); font-size: 1.1rem; font-family: Verdana;">`;
+const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: \
+                            20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); \
+                            font-size: 1.1rem; font-family: Verdana;">`;
 const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%); font-weight: normal;'>`;
 const _mailHTMLCloseSPAN = '</span><br><br><br><br>';
 const _mailHTMLCloseDIV  = '</div>';
