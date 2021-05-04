@@ -63,20 +63,22 @@ function createEmail(form: QnaForm) {
     from    : `"${form.name}" <${form.email}>`,
     to      : config.mail.toEthan,
     subject : _mailSubjects[form.type],
-    html    : buildEmailMessage(form.questions)
+    html    : buildHTMLMessage(form.questions),
   } as Mail.Options;
 }
 
 
-const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: \
-                            20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); \
-                            font-size: 1.1rem; font-family: Verdana;">`;
-const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%); font-weight: normal;'>`;
-const _mailHTMLCloseSPAN = '</span><br><br><br><br>';
-const _mailHTMLCloseDIV  = '</div>';
+const _mailHTMLOpenDIV =
+'<html><body style="background-color: #0f1112; \
+color: hsl(197, 11%, 70%); \
+font-size: 18px; font-family: Verdana;">'
+;
+const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%);'>`;
+const _mailHTMLCloseSPAN = '</span><br><br><br>';
+const _mailHTMLCloseDIV  = '</body></html>';
 
 
-function buildEmailMessage(questions: QnaFormQuestion[]) {
+function buildHTMLMessage(questions: QnaFormQuestion[]) {
   const questionHTML =
     questions.reduce((pv, q, i) => (
       pv += `${i+1}.) ${q.text}${_mailHTMLOpenSPAN}${q.answer}${_mailHTMLCloseSPAN}`
