@@ -29,7 +29,7 @@ const _mailHTMLCloseDIV  = '</div>';
 
 
 
-export function apiQnaFormRoute(router: Router) {
+export function useQnaFormRoute(router: Router) {
   const route = router.route('/form/qna')
   ;
   route.post<any, any, QnaForm>((req, res) => {
