@@ -64,6 +64,7 @@ function createEmail(form: QnaForm) {
     to      : config.mail.toEthan,
     subject : _mailSubjects[form.type],
     html    : buildHTMLMessage(form.questions),
+    text    : buildTextMessage(form.questions),
   } as Mail.Options;
 }
 
@@ -85,6 +86,13 @@ function buildHTMLMessage(questions: QnaFormQuestion[]) {
     ), '')
   ;
   return `${_mailHTMLOpenDIV}${questionHTML}${_mailHTMLCloseDIV}`;
+}
+
+
+function buildTextMessage(questions: QnaFormQuestion[]) {
+  return questions.reduce((pv, q, i) => {
+    return pv += `${i+1}) ${q.text}\n\n${q.answer}\n\n\n\n`;
+  }, '');
 }
 
 
