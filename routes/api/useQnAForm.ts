@@ -19,19 +19,6 @@ enum MailType {
 
 const _mailConfig        = inDev ? config.mail.mailtrap : config.mail.sendinblue;
 const _transport         = mailer.createTransport(_mailConfig);
-const _mailSubjects      = [
-  "EvEx Form - I've got something to share",
-  "EvEx Form - I want to collaborate",
-  "EvEx Form - I want to correct you",
-  "EvEx Form - Exclusive Content Request",
-];
-const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: \
-                            20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); \
-                            font-size: 1.1rem; font-family: Verdana;">`;
-const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%); font-weight: normal;'>`;
-const _mailHTMLCloseSPAN = '</span><br><br><br><br>';
-const _mailHTMLCloseDIV  = '</div>';
-
 
 
 export function useQnaFormRoute(router: Router) {
@@ -50,6 +37,14 @@ export function useQnaFormRoute(router: Router) {
 }
 
 
+const _mailSubjects = [
+  "EvEx Form - I've got something to share",
+  "EvEx Form - I want to collaborate",
+  "EvEx Form - I want to correct you",
+  "EvEx Form - Exclusive Content Request",
+];
+
+
 function isValidFormReq(req: Request<any, any, QnaForm>) {
   const { name, email, questions, type } = req.body
   ;
@@ -66,11 +61,19 @@ function isValidFormReq(req: Request<any, any, QnaForm>) {
 function createEmail(form: QnaForm) {
   return {
     from    : `"${form.name}" <${form.email}>`,
-    to      : 'ethankahn85@gmail.com',
+    to      : config.mail.toEthan,
     subject : _mailSubjects[form.type],
     html    : buildEmailMessage(form.questions)
   } as Mail.Options;
 }
+
+
+const _mailHTMLOpenDIV   = `<div style="background-color: #0f1112; box-sizing: border-box; padding: \
+                            20px 5px 20px 15px; height: 100%; width: 100%; color: hsl(197, 11%, 70%); \
+                            font-size: 1.1rem; font-family: Verdana;">`;
+const _mailHTMLOpenSPAN  = `<br><br><span style='color: hsl(161, 50%, 60%); font-weight: normal;'>`;
+const _mailHTMLCloseSPAN = '</span><br><br><br><br>';
+const _mailHTMLCloseDIV  = '</div>';
 
 
 function buildEmailMessage(questions: QnaFormQuestion[]) {
