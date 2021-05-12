@@ -6,7 +6,7 @@ import argon from 'argon2';
 import { addUser, updateUser } from '../database/users';
 import { yearInMs } from '../constants';
 import { readFile } from 'fs/promises';
-import { useQnaFormRoute } from './api/qnaForm';
+import { useQnaFormRoute } from './api/useQnAForm';
 
 
 const _router = Router();
@@ -54,8 +54,6 @@ _router.get<any, any, any, SetupParams>('/auth/setup', async (req, res) => {
 });
 
 
-type AccessForm     = { name: string; email: string; questions: [text: string, answer: string][]; }
-;
 _router.route('/auth/red33m')
   // Authenticate with passcode
   .put<any, any, {passcode:string}>(async (req, res) => {
