@@ -36,7 +36,7 @@ type SetupParams = { userid: string; }
 ;
 _router.get<any, any, any, SetupParams>('/auth/setup', async (req, res) => {
   const { userid } = req.query;
-  const version = (await readFile(`${paths.web}/version.txt`)).toString();
+  const version = (await readFile(`${paths.web}/version.json`)).toString();
 
   // User already exists
   if (req.isAuthorized) {
