@@ -21,6 +21,7 @@ function copyFiles() {
     './config.json',
     './run.sh',
     '!./node_modules/**',
+    '!test.js',
   ])
   .pipe(dest(releaseDir));
 }
